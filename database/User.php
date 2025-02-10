@@ -137,5 +137,17 @@ class Users{
         }
     }
 
+    function update_user_login_data(){
+        $query="UPDATE users set login_status = :login_status where id = :user_id";
+        $statment = $this->connect->prepare($query);
+        $statment->bindParam(':login_status', $this->user_login_status);
+        $statment->bindParam(':user_id', $this->user_id);
+        if($statment->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
 ?>
