@@ -17,8 +17,8 @@ if(isset($_POST['login'])){
             $user_obj->setUserId($user_data['id']);
             $user_obj->setUserLoginStatus('Login');
             if($user_obj->update_user_login_data()){
-             $_SESSION['user_data'][$user_data['user_id']] = [
-                "id"=>$user_data['user_id'],
+             $_SESSION['user_data'][$user_data['id']] = [
+                "id"=>$user_data['id'],
                 "name"=>$user_data['name'],
                 "profile"=>$user_data['profile']
              ];  

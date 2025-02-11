@@ -95,6 +95,15 @@ class Users{
         }
         return $user;
     }
+    function get_user_data_by_id(){
+        $query = "SELECT * from users where id = :id";
+        $statement = $this->connect->prepare($query);
+        $statement->bindParam(':id', $this->user_id);
+        if($statement->execute()){
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
+        }
+        return $user;
+    }
 
     function save_data(){
         $query = "insert into users (`name`, `email`, `password`, `profile`, `status`, `created_on`, `verification_code`) Values(:user_name, :user_email, :user_password, :user_profile, :user_status, :user_created_on, :user_verification_code)";
