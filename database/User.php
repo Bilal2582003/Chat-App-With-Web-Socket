@@ -158,5 +158,28 @@ class Users{
         }
     }
 
+    function upload_image($image){
+        $extension = pathinfo( $image['name'] );
+        $extension = $extension['extension']; // it will get image extension
+        $new_name = rand() . '.' . $extension;
+        $destination = 'images/'.$new_name;
+        move_uploaded_file($image['tmp_name'], $destination);
+        return $destination;
+    }
+    function update_data(){
+        $query = "UPDATE users set name = :name, email = :email, password=:password, profile = :profile where id = :id";
+        $statement = $this->connect->prepare($query);
+        $statement->bindParam(':name', $this->user_name);
+        $statement->bindParam(':email', $this->user_email);
+        $statement->bindParam(':password', $this->user_password);
+        $statement->bindParam(':profile', $this->user_profile);
+        $statement->bindParam(':id', $this->user_id);
+        if($statement->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
 ?>
