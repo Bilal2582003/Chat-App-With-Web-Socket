@@ -107,7 +107,7 @@ session_start();
                                             <b>${data.from}</b>
                                             ${data.msg} 
                                             <br>
-                                            <div class="text-right">
+                                            <div class="text-end">
                                                 <small> <i> ${data.dt} </i> </small> 
                                             </div> 
                                         </div> 
