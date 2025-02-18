@@ -1,11 +1,14 @@
 <?php
 session_start();
-if(!isset($_SESSION['user_data'])){
+if (!isset($_SESSION['user_data'])) {
     header("location: index.php");
 }
+require "database/User.php";
 require "database/Chatroom.php";
+$user_obj = new Users();
 $chat_obj = new ChatRoom();
 $chat_data = $chat_obj->get_all_chat_data();
+$user_data = $user_obj->get_all_user_data();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,12 +19,14 @@ $chat_data = $chat_obj->get_all_chat_data();
     <title>CHATROOM || PHP Chat Application</title>
     <link rel="stylesheet" href="src/css/bootstrap.min.css">
     <link rel="stylesheet" href="src/css/font-awesome.min.css">
+    <link rel="stylesheet" href="src/css/parsley.min.css">
 </head>
 <style>
     #message_area {
         min-width: 90%;
         height: 50vh;
         background-color: lightgray;
+        overflow-y: auto
     }
 
     #chat_message,
@@ -38,29 +43,37 @@ $chat_data = $chat_obj->get_all_chat_data();
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h3>
-                            CHAT ROOM
-                        </h3>
+                        <div class="row">
+                            <div class="col col-sm-6">
+                                <h3>
+                                    CHAT ROOM
+                                </h3>
+                            </div>
+                            <div class="col col-sm-6 text-end">
+                                <a href="privateChat.php" class="btn btn-success btn-sm">Private Chat</a>
+                            </div>
+                        </div>
+
                     </div>
-                    <dvi class="card-body" id="message_area">
+                    <div class="card-body" id="message_area">
                         <?php
-                        foreach($chat_data as $chats){
-                            if(isset($_SESSION['user_data'][$chats['user_id']])){
+                        foreach ($chat_data as $chats) {
+                            if (isset($_SESSION['user_data'][$chats['user_id']])) {
                                 $from = 'Me';
                                 $row = "row justify-content-end";
                                 $backgorund = 'text-dark alert-light';
-                            }else{
+                            } else {
                                 $from = $chats['name'];
                                 $row = "row justify-content-start";
                                 $backgorund = 'alert-success';
                             }
                             echo '
-                            <div class="'.$row.'">
+                            <div class="' . $row . '">
                                 <div class="col-sm-10">
-                                    <div class="shadow-sm alert '.$backgorund.'">
-                                        <b>'.$from.' - </b>'.$chats['msg'].'<br>
+                                    <div class="shadow-sm alert ' . $backgorund . '">
+                                        <b>' . $from . ' - </b>' . $chats['msg'] . '<br>
                                         <div class="text-end">
-                                            <small><i>'.$chats['created_on'].'</i></small>
+                                            <small><i>' . $chats['created_on'] . '</i></small>
                                         </div>
                                     </div>
                                 </div>
@@ -68,7 +81,7 @@ $chat_data = $chat_obj->get_all_chat_data();
                             ';
                         }
                         ?>
-                    </dvi>
+                    </div>
                 </div>
                 <form method="post" id="chat_form">
                     <div class="input-group mb-3">
@@ -103,6 +116,30 @@ $chat_data = $chat_obj->get_all_chat_data();
                     <?php
                 }
                 ?>
+                <div class="card mt-3">
+                    <div class="card-header">User List</div>
+                    <div class="card-body" id="user_list">
+                        <div class="list-group list-group-flush">
+                            <?php
+                            if (count($user_data) > 0) {
+                                foreach ($user_data as $key => $user) {
+                                    $icon = '<i class="fa fa-circle text-danger"></i>';
+                                    if ($user['login_status'] == 'Login') {
+                                        $icon = '<i class="fa fa-circle text-success"></i>';
+                                    }
+                                    if ($user['id'] != $login_user_id) {
+                                        echo "<a class='list-group-item-action' style='text-decoration:none'> 
+                                            <img src='" . $user['profile'] . "' class='image-fluid rounded-circle img-thumbnail' width='50' />
+                                            <span class='ml-1'> <strong> " . $user['name'] . " </strong> </span>
+                                            <span class='mt-2 float-end'>" . $icon . "</span>
+                                        </a>";
+                                    }
+                                }
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>

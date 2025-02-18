@@ -48,6 +48,7 @@ if(isset($_POST['login'])){
     <link rel="stylesheet" href="src/css/bootstrap.min.css">
     <script src="src/js/jquery.min.js"></script>
     <script src="src/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="src/css/parsley.min.css">
 </head>
 <body>
     <div class="container">

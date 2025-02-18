@@ -181,5 +181,14 @@ class Users{
         }
     }
 
+    function get_all_user_data(){
+        $query = "SELECT * from users ";
+        $statement = $this->connect->prepare($query);
+        if($statement->execute()){
+            $user = $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $user;
+    }
+
 }
 ?>
