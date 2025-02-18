@@ -44,6 +44,12 @@ public function save_chat(){
     $statement->bindParam(":created_on", $this->created_on);
     $statement->execute();
 }
+public function get_all_chat_data(){
+    $query="SELECT * from chatrooms join users on users.id = chatrooms.user_id order by chatrooms.id ";
+    $statement = $this->con->prepare($query);
+    $statement->execute();
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
 
 }
 ?>

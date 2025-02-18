@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(!isset($_SESSION['user_data'])){
+    header("location: index.php");
+}
+require "database/Chatroom.php";
+$chat_obj = new ChatRoom();
+$chat_data = $chat_obj->get_all_chat_data();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +42,33 @@ session_start();
                             CHAT ROOM
                         </h3>
                     </div>
-                    <dvi class="card-body" id="message_area"></dvi>
+                    <dvi class="card-body" id="message_area">
+                        <?php
+                        foreach($chat_data as $chats){
+                            if(isset($_SESSION['user_data'][$chats['user_id']])){
+                                $from = 'Me';
+                                $row = "row justify-content-end";
+                                $backgorund = 'text-dark alert-light';
+                            }else{
+                                $from = $chats['name'];
+                                $row = "row justify-content-start";
+                                $backgorund = 'alert-success';
+                            }
+                            echo '
+                            <div class="'.$row.'">
+                                <div class="col-sm-10">
+                                    <div class="shadow-sm alert '.$backgorund.'">
+                                        <b>'.$from.' - </b>'.$chats['msg'].'<br>
+                                        <div class="text-end">
+                                            <small><i>'.$chats['created_on'].'</i></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            ';
+                        }
+                        ?>
+                    </dvi>
                 </div>
                 <form method="post" id="chat_form">
                     <div class="input-group mb-3">
@@ -104,7 +136,7 @@ session_start();
                 var html_data = `<div class="${row}">
                                     <div class="col-sm-10">
                                         <div class="shadow-sm alert ${background_color}">
-                                            <b>${data.from}</b>
+                                            <b>${data.from} - </b>
                                             ${data.msg} 
                                             <br>
                                             <div class="text-end">
@@ -117,6 +149,7 @@ session_start();
                 $("#chat_massage").val('');
             };
             $("#chat_form").parsley();
+            $("#message_area").scrollTop($("#message_area")[0].scrollHeight)
             $("#chat_form").on("submit", function (event) {
                 event.preventDefault();
                 if ($("#chat_form").parsley().isValid()) {
@@ -127,6 +160,7 @@ session_start();
                         msg: message
                     }
                     conn.send(JSON.stringify(data));
+                    $("#message_area").scrollTop($("#message_area")[0].scrollHeight)
                 }
             })
             $("#logout").on("click", function () {
