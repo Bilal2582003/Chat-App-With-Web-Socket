@@ -33,14 +33,45 @@ require "database/Chatroom.php";
                             class="img-fluid img-thumbnail rounded-circle" width="150">
                             <h3 class="mt-2"><?php echo $value['name'];?></h3>
                             <a href="profile.php" class="btn btn-secondary mt-2 mb-2">Edit</a>
-
                     </div>
                     <?php
                 }
+                $user_obj = new Users();
+                $user_obj->setUserId($login_user_id);
+                $user_data = $user_obj->get_all_user_data_with_status_count();
+
+
                 ?>
+                <div class="list-group" style="max-height:100vh;margin-bottom:10px;overflow-y:scroll;-webkit-overflow-scrolling:touch"></div>
+                    <?php
+                    foreach($user_data as $key => $value){
+                        $icon = '<i class="fa fa-circle text-danger"></i>';
+                        if($value['status'] == 'Login'){
+                            $icon = '<i class="fa fa-circle text-success"></i>';
+                        }
+                        if($login_user_id != $value['id']){
+                            if($value['count_status'] > 0){
+                                $total_unread_message = '<span class="badge badge-danger badge-pill">'.$value['count_status'].'</span>';
+                            }else{
+                                $total_unread_message = '';
+                            }
+                            echo '<a class="list-group-item list-group-item-action select-user p-2" style="cursor:pointer" data-userid="'.$value['id'].'">
+                            <img src="'.$value['profile'].'" class="image-fluid rounded-circle img-thumbnail" width="50" />
+                            <span class="ml-1">
+                            <strong>
+                            <span id="list_user_name_'.$value['id'].'">'.$value['name'].'</span>
+                            <span id="userid_'.$value['id'].'">'.$total_unread_message.'</span>
+                            </strong>
+                            </span>
+                            <span class="mt-2 float-end mr-2" id="userstatus_'.$value['id'].'">'.$icon.'</span>
+                             </a>';
+                        }
+                    }
+                    ?>
+                
                 </div>
             </div>
-            <div class="col-lg-9 col-md-8div sm-7">
+            <div class="col-lg-9 col-md-8 col-sm-7">
                 <br>
                 <h3 class="text-center">Real time one to one chat By retchat websocket</h3>
                 </br>
